@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Event Sync UI</title>
+<style>
+table {border-collapse: collapse; width: 100%;}
+th, td {padding: 8px; border: 1px solid black;}
+.conflict {color: red; font-weight: bold;}
+</style>
+</head>
+<body>
+
+<h2>Unified Meetings</h2>
+
+<table>
+<thead>
+<tr>
+<th>Client</th>
+<th>Time</th>
+<th>Location</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+<script>
+fetch('/api/meetings')
+.then(res => res.json())
+.then(data => {
+    let html = '';
+    data.forEach(m => {
+        html += `
+        <tr>
+            <td>${m.client || ''}</td>
+            <td>${m.time || ''}</td>
+            <td class="${m.location && m.location.conflict ? 'conflict' : ''}">
+                ${m.location ? m.location.value : ''}
+            </td>
+            <td class="${m.status && m.status.conflict ? 'conflict' : ''}">
+                ${m.status ? m.status.value : ''}
+            </td>
+        </tr>
+        `;
+    });
+    document.getElementById("tableBody").innerHTML = html;
+});
+</script>
+
+</body>
+</html>
